@@ -42,12 +42,11 @@
 
 // ------------------------ Code ----------------------------
 
+using Assets.Combitech.UserControl;
 using GizmoSDK.GizmoBase;
-using UnityEngine;
-using System.Threading;
 using Saab.Foundation.Unity.MapStreamer;
-using UnityEngine.Profiling;
-using System;
+using System.Linq;
+using UnityEngine;
 
 namespace Saab.Unity.Initializer
 {
@@ -156,11 +155,10 @@ namespace Saab.Unity.Initializer
 
             // Set up scene manager camera
 
-            SceneManager scenemanager = GetComponent<SceneManager>();
-            CameraControl cameracontrol = GetComponent<CameraControl>();
+            var scenemanager = GetComponent<SceneManager>();
+            var cameracontrol = GetComponent<WorldCameraController>();
 
             scenemanager.SceneManagerCamera = cameracontrol;
-
         }
 
         private void Message_OnMessage(string sender, MessageLevel level, string message)
