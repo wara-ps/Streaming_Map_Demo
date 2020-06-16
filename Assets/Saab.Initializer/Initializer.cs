@@ -42,11 +42,12 @@
 
 // ------------------------ Code ----------------------------
 
-using Assets.Combitech.UserControl;
 using GizmoSDK.GizmoBase;
-using Saab.Foundation.Unity.MapStreamer;
-using System.Linq;
 using UnityEngine;
+using System.Threading;
+using Saab.Foundation.Unity.MapStreamer;
+using UnityEngine.Profiling;
+using System;
 
 namespace Saab.Unity.Initializer
 {
@@ -101,10 +102,11 @@ namespace Saab.Unity.Initializer
 
             Message.Send(Message.GIZMOSDK, MessageLevel.DEBUG, "MultiCast Lock acquired");
 
-            station = new DebugCommandStation("udp::45456?nic=${wlan0}&blocking=no");
+            //station = new DebugCommandStation("udp::45456?nic=${wlan0}&blocking=no");
 
-            Thread thread = new Thread(new ThreadStart(WorkThreadFunction));
-            thread.Start();
+            //Thread thread = new Thread(new ThreadStart(WorkThreadFunction));
+            //thread.Start();
+
 #endif //UNITY_ANDROID
         }
 
@@ -155,10 +157,11 @@ namespace Saab.Unity.Initializer
 
             // Set up scene manager camera
 
-            var scenemanager = GetComponent<SceneManager>();
-            var cameracontrol = GetComponent<WorldCameraController>();
+            SceneManager scenemanager = GetComponent<SceneManager>();
+            CameraControl cameracontrol = GetComponent<CameraControl>();
 
             scenemanager.SceneManagerCamera = cameracontrol;
+
         }
 
         private void Message_OnMessage(string sender, MessageLevel level, string message)

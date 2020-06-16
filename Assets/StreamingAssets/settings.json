@@ -1,0 +1,57 @@
+{
+	"App": {
+		"Fullscreen": false
+	},
+	"Maps": [
+		{
+			"Id": "{BD7D4AA0-5D8E-4FA1-A9FA-8863F87BFCC5}",
+			"Name": "Jönköping",
+			"Url": "C:/Maps/jkg_small/roi.gzl",
+			"StartPosition": {
+				"x": 7000,
+				"y": 20,
+				"z": -21500
+			}
+		},
+		{
+			"Id": "{3D54D0B7-8925-4150-8C9B-52AB56F6A954}",
+			"Name": "Eksjö",
+			"Url": "C:/Maps/Eksjo/data/map.gzd",
+			"StartPosition": {
+				"x": 2700,
+				"y": 20,
+				"z": -9000
+			}
+		},
+		{
+            "Id": "{2D54D0B7-8925-4150-8C9B-52AB56F6A954}",
+            "Name": "PURL Eksjö",
+            "Url": "purl:MAPS,eksjo/data/map.gzd",
+            "StartPosition": {
+                "x": 2700,
+                "y": 20,
+                "z": -9000
+            }
+        },
+		{
+            "Id": "{1D54D0B7-8925-4150-8C9B-52AB56F6A954}",
+            "Name": "Västervik",
+            "Url": "C:/Maps/Vastervik/map.gzd",
+            "StartPosition": {
+                "x": 3350,
+                "y": 120,
+                "z": 1050
+            }
+        },
+        {
+            "Id": "{1D54D0B7-8925-4150-8C9B-52AB56F6A95F}",
+            "Name": "PURL Västervik",
+            "Url": "purl:MAPS,Vastervik/map.gzd",
+            "StartPosition": {
+                "x": 3350,
+                "y": 120,
+                "z": 1050
+            }
+        }
+	]
+}

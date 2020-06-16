@@ -82,11 +82,47 @@ namespace GizmoSDK
                 End
             }
 
+            public enum AdapterError
+            {
+                NO_ERROR,
+
+                MISSING_URL,
+                ACCESS_DENIED,
+                WRITE_NOT_ALLOWED,
+                FAILED_TO_CONNECT,
+                BROKEN_ACCESS,
+                URL_SYNTAX,
+                MISSING_URL_PROVIDER,
+                FORMAT_ERROR,
+                OTHER,
+            };
+
             public SerializeAdapter(IntPtr nativeReference) : base(nativeReference) { }
 
-            public static SerializeAdapter GetURLAdapter(string url, SerializeAction action=SerializeAction.INPUT, AdapterFlags flags=AdapterFlags.DEFAULT,string password="")
+            public static SerializeAdapter GetURLAdapter(string url, SerializeAction action = SerializeAction.INPUT, AdapterFlags flags = AdapterFlags.DEFAULT, string password = "")
             {
-                SerializeAdapter adapter= new SerializeAdapter(SerializeAdapter_getURLAdapter(url,action,flags,password));
+                AdapterError error= AdapterError.NO_ERROR;
+                IntPtr nativeErrorString = IntPtr.Zero;
+
+                SerializeAdapter adapter = new SerializeAdapter(SerializeAdapter_getURLAdapter(url, action, flags, password,ref nativeErrorString,ref error));
+
+                if(!adapter.IsValid() && (error!= AdapterError.NO_ERROR || nativeErrorString!=IntPtr.Zero))
+                {
+                    throw new SystemException(Marshal.PtrToStringUni(nativeErrorString));
+                }
+
+                return adapter;
+            }
+
+            public static SerializeAdapter GetURLAdapter(string url, SerializeAction action, AdapterFlags flags,ref string errorString,ref AdapterError error, string password="")
+            {
+                IntPtr nativeErrorString = IntPtr.Zero;
+
+                SerializeAdapter adapter= new SerializeAdapter(SerializeAdapter_getURLAdapter(url,action,flags,password,ref nativeErrorString,ref error));
+
+                if (nativeErrorString != IntPtr.Zero)
+                    errorString = Marshal.PtrToStringUni(nativeErrorString);
+
                 return adapter;
             }
 
@@ -172,10 +208,11 @@ namespace GizmoSDK
                 return SerializeAdapter_hasError(GetNativeReference());
             }
 
-            public string GetError()
+            public string Error
             {
-                return Marshal.PtrToStringUni(SerializeAdapter_getError(GetNativeReference()));
+                get { return Marshal.PtrToStringUni(SerializeAdapter_getError(GetNativeReference())); }
             }
+                     
 
             public static bool SetAssetManagerHandle(IntPtr JNIEnvHandle,IntPtr assetManagerHandle)
             {
@@ -256,7 +293,7 @@ namespace GizmoSDK
             #region -------------- Native calls ------------------
 
             [DllImport(Platform.BRIDGE, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-            private static extern IntPtr SerializeAdapter_getURLAdapter(string url, SerializeAction action , AdapterFlags flags , string password);
+            private static extern IntPtr SerializeAdapter_getURLAdapter(string url, SerializeAction action , AdapterFlags flags , string password,ref IntPtr nativeErrorString,ref AdapterError error);
             [DllImport(Platform.BRIDGE, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
             private static extern void SerializeAdapter_write_UInt32(IntPtr adapter_reference,UInt32 value,bool bigEndian);
             [DllImport(Platform.BRIDGE, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
@@ -303,10 +340,24 @@ namespace GizmoSDK
 
             }
 
+            public void SetChunkSize(UInt32 size)
+            {
+                SerializeAdapterQueue_setChunkSize(GetNativeReference(), size);
+            }
+
+            public void SetRealSize(UInt32 size)
+            {
+                SerializeAdapterQueue_setRealSize(GetNativeReference(), size);
+            }
+
             #region -------------- Native calls ------------------
 
             [DllImport(Platform.BRIDGE, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
             private static extern IntPtr SerializeAdapterQueue_create(QueueMode mode,UInt32 chunksize);
+            [DllImport(Platform.BRIDGE, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            private static extern void SerializeAdapterQueue_setChunkSize(IntPtr queue_reference,UInt32 chunkSize);
+            [DllImport(Platform.BRIDGE, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            private static extern void SerializeAdapterQueue_setRealSize(IntPtr queue_reference,UInt32 realSize);
 
             #endregion
         }

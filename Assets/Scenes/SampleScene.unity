@@ -309,12 +309,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 534669902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e16f60fbbcf068d4fb79e2a553da90fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 0283285cec50a434eac1ca6d49af4bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  X: 7000
-  Y: 20
-  Z: -21500
+  speed: 200
+  rotspeed: 10
+  X: 7026.984477070621
+  Y: 16.08311892804426
+  Z: -21668.3150641441
 --- !u!114 &534669907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,7 +335,8 @@ MonoBehaviour:
     ComputeShader: {fileID: 7200000, guid: 75616827e64e7bd478340a97f80a1da0, type: 3}
     FrameCleanupInterval: 1000
     MaxBuildTime: 0.01
-  MapUrl: c:/Maps/jkg_small/roi.gzl
+    DynamicLoaders: 4
+  MapUrl: purl:maps,sweden/smaland/data/map.gzd
 --- !u!114 &534669908
 MonoBehaviour:
   m_ObjectHideFlags: 0
