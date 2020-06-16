@@ -1,4 +1,5 @@
 ﻿using Assets.Combitech.UserControl;
+using GizmoSDK.Coordinate;
 using GizmoSDK.GizmoBase;
 using Saab.Foundation.Map;
 using Saab.Foundation.Unity.MapStreamer;
@@ -33,7 +34,7 @@ namespace Assets.Combitech.UserInterface
                 GUI.Label(new Rect(0, row0, HeaderWidth, RowHeight), $"Camera pos:", HeaderStyle);
                 GUI.Label(new Rect(0, row1, HeaderWidth, RowHeight), $"Camera alt:", HeaderStyle);
                 var pos = MapControl.SystemMap.GlobalToLocal(_player.GlobalPosition);
-                if (MapControl.SystemMap.GetLatPos(pos, out var latlng))
+                if (MapControl.SystemMap.LocalToWorld(pos, out LatPos latlng))
                 {
                     GUI.Label(new Rect(HeaderWidth, row0, ValueWidth, RowHeight), $"{latlng}", ValueStyle);
                     if (MapControl.SystemMap.GetGroundPosition(_player.GlobalPosition + new Vec3(0, 10000, 0), new Vec3(0, -1, 0), out var ground))

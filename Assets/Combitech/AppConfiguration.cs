@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using Newtonsoft.Json;
 using GizmoSDK.GizmoBase;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace Assets.Combitech
 {
@@ -19,7 +20,7 @@ namespace Assets.Combitech
         {
             DontDestroyOnLoad(gameObject);
 
-            var path = Path.Combine(Application.streamingAssetsPath, "config.json");
+            var path = Path.Combine(Application.streamingAssetsPath, "settings.json");
             var json = File.ReadAllText(path, Encoding.UTF8);
             Settings = JsonConvert.DeserializeObject<ConfigRoot>(json);
 
@@ -33,7 +34,13 @@ namespace Assets.Combitech
 
         public class ConfigRoot
         {
+            public ConfigAppProperties App { get; set; }
             public List<ConfigMapItem> Maps { get; set; }
+        }
+
+        public class ConfigAppProperties
+        {
+            public bool Fullscreen { get; set; }
         }
 
         public class ConfigMapItem

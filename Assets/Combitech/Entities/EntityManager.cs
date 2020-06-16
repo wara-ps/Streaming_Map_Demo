@@ -1,4 +1,5 @@
 ﻿using Boo.Lang;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Combitech.Entities
@@ -6,6 +7,8 @@ namespace Assets.Combitech.Entities
     public class EntityManager : MonoBehaviour
     {
         public List<Entity> Entities { get; } = new List<Entity>();
+
+        public Entity Selected => Entities.FirstOrDefault(x => x.Selected);
 
         public void AddEntity(Entity entity)
         {

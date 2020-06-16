@@ -1,4 +1,5 @@
 ﻿using Assets.Combitech.Entities;
+using GizmoSDK.Coordinate;
 using Saab.Foundation.Map;
 using Saab.Utility.Unity.NodeUtils;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ namespace Assets.Combitech.UserControl
         {
             if (GetClickedGroundPosition(out var pos) && pos.clamp_result != GizmoSDK.Gizmo3D.IntersectQuery.NULL)
             {
-                MapControl.SystemMap.GetLatPos(pos, out var latlng);
+                MapControl.SystemMap.LocalToWorld(pos, out LatPos latlng);
                 if (NodeUtils.FindGameObjects(pos.node.GetNativeReference(), out var list))
                 {
                     var parent = list.FirstOrDefault();

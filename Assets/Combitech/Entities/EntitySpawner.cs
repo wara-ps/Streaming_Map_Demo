@@ -16,8 +16,8 @@ namespace Assets.Combitech.Entities
         {
             var sphere = GameObject.CreatePrimitive(type);
 
-            sphere.transform.parent = parent.transform;
-            sphere.transform.transform.localPosition = new Vector3((float)pos.x, (float)pos.y, (float)pos.z);
+            sphere.transform.SetParent(parent.transform);
+            sphere.transform.localPosition = new Vector3((float)pos.x, (float)pos.y, (float)pos.z);
             sphere.transform.localScale = new Vector3(10, 10, 10);
 
             var renderer = sphere.GetComponent<MeshRenderer>();
