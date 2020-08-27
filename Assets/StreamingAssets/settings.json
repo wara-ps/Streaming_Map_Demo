@@ -4,6 +4,36 @@
 	},
 	"Maps": [
 		{
+			"Id": "{FFFD4AA0-5D8E-4FA1-A9FA-8863F87BFCC5}",
+			"Name": "Gränsö Castle",
+			"Url": "C:/Maps/vastervik_granso/processed/granso_castle.gzl",
+			"StartPosition": {
+                "x": 0,
+                "y": 120,
+                "z": 350
+            }
+		},
+		{
+			"Id": "{FD7D4AA0-5D8E-4FA1-A9FA-8863F87BFCC5}",
+			"Name": "Västervik + Gränsö",
+			"Url": "C:/Maps/vastervik_granso/processed/map.gzd",
+			"StartPosition": {
+                "x": 3350,
+                "y": 120,
+                "z": 1050
+            }
+		},
+		{
+			"Id": "{ED7D4AA0-5D8E-4FA1-A9FA-8863F87BFCC5}",
+			"Name": "PURL Västervik + Gränsö",
+			"Url": "purl:MAPS,vastervik_granso/processed/map.gzd",
+			"StartPosition": {
+                "x": 3350,
+                "y": 120,
+                "z": 1050
+            }
+		},
+		{
 			"Id": "{BD7D4AA0-5D8E-4FA1-A9FA-8863F87BFCC5}",
 			"Name": "Jönköping",
 			"Url": "C:/Maps/jkg_small/roi.gzl",
