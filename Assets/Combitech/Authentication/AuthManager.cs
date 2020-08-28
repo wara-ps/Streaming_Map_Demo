@@ -33,7 +33,7 @@ namespace Assets.Combitech.Authentication
         private static string _instance = "https://login.microsoftonline.com/";
         private static string _tenantId = "7948ab45-e924-4cdc-84cd-5b7e20bb5aaa";
         private static string _clientId = "6035e2ab-6c0b-4030-8a3b-67d15f2ba315";
-        private static string[] _scopes = new string[] { "user.read" };
+        private static string[] _scopes = new string[] { "user.read", "openid", "api://consensus.waraps.org/consensus.access" };
 
         private string _verificationUrl = null;
         private string _verificationCode = null;
@@ -60,6 +60,11 @@ namespace Assets.Combitech.Authentication
             Instance = this;
         }
 
+        private void Start()
+        {
+            SignIn(true);
+        }
+
         private void Update()
         {
             if (_verificationUrl != null && _verificationCode != null)
@@ -78,8 +83,13 @@ namespace Assets.Combitech.Authentication
             }
         }
 
-        public async void SignIn()
+        public async void SignIn(bool silent = false)
         {
+            if (AuthStatus == AuthStatus.Authenticated)
+            {
+                return;
+            }
+
             AuthStatus = AuthStatus.InProgress;
             AuthenticationResult authResult = null;
             var accounts = await _client.GetAccountsAsync();
@@ -95,6 +105,12 @@ namespace Assets.Combitech.Authentication
                 // A MsalUiRequiredException happened on AcquireTokenSilent. 
                 // This indicates you need to call AcquireTokenWithDeviceCode to acquire a token
                 Debug.LogError(ex);
+
+                if (silent)
+                {
+                    ResetAuthentication();
+                    return;
+                }
 
                 try
                 {
@@ -114,25 +130,21 @@ namespace Assets.Combitech.Authentication
                 catch (MsalException msalex)
                 {
                     Debug.LogError(msalex);
-                    AuthStatus = AuthStatus.NotAuthenticated;
+                    ResetAuthentication();
                     return;
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogError(ex);
-                AuthStatus = AuthStatus.NotAuthenticated;
+                ResetAuthentication();
                 return;
             }
 
             Debug.Log(authResult.Account.Username);
             Debug.Log(authResult.AccessToken);
 
-            AuthStatus = AuthStatus.Authenticated;
-            Account = authResult.Account;
-            AccessToken = authResult.AccessToken;
-
-            OnAuthUpdate?.Invoke(AuthStatus);
+            SetAuthentication(authResult);
         }
 
         public async void SignOut()
@@ -142,9 +154,21 @@ namespace Assets.Combitech.Authentication
                 await _client.RemoveAsync(Account);
             }
 
+            ResetAuthentication();
+        }
+
+        private void ResetAuthentication()
+        {
             AuthStatus = AuthStatus.NotAuthenticated;
             Account = null;
             AccessToken = null;
+        }
+
+        private void SetAuthentication(AuthenticationResult result)
+        {
+            AuthStatus = AuthStatus.Authenticated;
+            Account = result.Account;
+            AccessToken = result.AccessToken;
         }
     }
 }

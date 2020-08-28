@@ -4,10 +4,10 @@ using UnityEngine.UI;
 public class NavbarMenu : MonoBehaviour
 {
     [SerializeField]
-    private Button _toggle;
+    private Button _toggle = null;
 
     [SerializeField]
-    private RectTransform _navbar;
+    private RectTransform _navbar = null;
 
     private bool _visible = false;
 

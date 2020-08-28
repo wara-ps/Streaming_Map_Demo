@@ -1,9 +1,7 @@
-﻿using Assets.Combitech.Entities;
-using GizmoSDK.Coordinate;
+﻿using Assets.Combitech.Consensus;
+using Assets.Combitech.Entities;
 using Saab.Foundation.Map;
-using Saab.Utility.Unity.NodeUtils;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,39 +9,35 @@ namespace Assets.Combitech.UserControl
 {
     public class WorldSelectController : MonoBehaviour
     {
-        private readonly List<SelectableObject> SelectableObjects = new List<SelectableObject>();
         private EntityManager _manager;
         private EntitySpawner _spawner;
 
         private void Start()
         {
-            SelectableObjects.AddRange(FindObjectsOfType<SelectableObject>());
             _manager = FindObjectOfType<EntityManager>();
             _spawner = FindObjectOfType<EntitySpawner>();
         }
 
-        private void Update()
+        private async void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
                 if (PointerIsOverUi())
                     return;
 
-                if (CheckGameObjectClick())
+                if (await CheckGameObjectClick())
                 {
                     return;
                 }
 
-                SelectableObjects.ForEach(x => x.Selected = false);
-
-                if (CheckGroundClick())
+                if (await CheckGroundClick())
                 {
                     return;
                 }
             }
         }
 
-        private bool CheckGameObjectClick()
+        private async Task<bool> CheckGameObjectClick()
         {
             var camera = GetComponent<Camera>();
             var ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -52,15 +46,17 @@ namespace Assets.Combitech.UserControl
                 Debug.Log($"Clicked on object: {info.transform.name}");
 
                 var focused = info.transform.GetComponentInParent<SelectableObject>();
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    _manager.RemoveEntity(focused.GetComponent<Entity>());
-                    Destroy(focused.gameObject);
-                }
-                else
-                {
-                    SelectObject(focused);
-                }
+                var entity = focused.GetComponent<Entity>();
+                await ConsensusApi.Instance.Select(entity.Data);
+                //if (Input.GetKey(KeyCode.LeftShift))
+                //{
+                //    _manager.RemoveEntity(focused.GetComponent<Entity>());
+                //    Destroy(focused.gameObject);
+                //}
+                //else
+                //{
+                //SelectObject(focused);
+                //}
 
                 return true;
             }
@@ -68,39 +64,28 @@ namespace Assets.Combitech.UserControl
             return false;
         }
 
-        private void SelectObject(SelectableObject selected)
-        {
-            var previous = SelectableObjects.FirstOrDefault(x => x.Selected);
-            if (previous == selected)
-            {
-                previous.Selected = !previous.Selected;
-            }
-            else
-            {
-                SelectableObjects.ForEach(x => x.Selected = x == selected);
-            }
-        }
-
-        private bool CheckGroundClick()
+        private async Task<bool> CheckGroundClick()
         {
             if (GetClickedGroundPosition(out var pos) && pos.clamp_result != GizmoSDK.Gizmo3D.IntersectQuery.NULL)
             {
-                MapControl.SystemMap.LocalToWorld(pos, out LatPos latlng);
-                if (NodeUtils.FindGameObjects(pos.node.GetNativeReference(), out var list))
-                {
-                    var parent = list.FirstOrDefault();
-                    if (parent)
-                    {
-                        var sphere = _spawner.SpawnEntity(parent, pos.position, PrimitiveType.Sphere);
-                        sphere.name = $"Sphere ({latlng})";
+                //MapControl.SystemMap.LocalToWorld(pos, out LatPos latlng);
+                //if (NodeUtils.FindGameObjects(pos.node.GetNativeReference(), out var list))
+                //{
+                //    var parent = list.FirstOrDefault();
+                //    if (parent)
+                //    {
+                //        var localpos = new Vector3((float)pos.position.x, (float)pos.position.y, (float)pos.position.z);
+                //        var sphere = _spawner.SpawnEntity(parent, localpos, PrimitiveType.Sphere);
+                //        sphere.name = $"Sphere ({latlng})";
 
-                        var selectable = sphere.AddComponent<SelectableObject>();
-                        SelectableObjects.Add(selectable);
+                //        var selectable = sphere.AddComponent<SelectableObject>();
+                //        SelectableObjects.Add(selectable);
 
-                        var entity = sphere.AddComponent<Entity>();
-                        _manager.AddEntity(entity);
-                    }
-                }
+                //        var entity = sphere.AddComponent<Entity>();
+                //        _manager.AddEntity(entity);
+                //    }
+                //}
+                await ConsensusApi.Instance.Select(null);
 
                 return true;
             }
